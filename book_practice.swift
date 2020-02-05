@@ -485,3 +485,160 @@ extension Int : Blinkable {
         print("I am the interger \(self). I do not blink")
     }
 }
+
+
+extension Int {
+    var double : Int {
+        return self * 2
+    }
+    func multiplyWith(anotherNumber : Int)-> Int {
+        return self * anotherNumber
+    }
+}
+2.double
+2.multiplyWith(anotherNumber: 5)
+
+public class AccessControl {
+    internal var internalProperty = 123
+}
+
+private class PrivateAccess {
+    func doStuff()-> String {
+        return "Private Access is doing stiff"
+    }
+}
+
+//private let privateClass = PrivateAccess()
+//
+//func doAThing()
+//{
+//    print(self.privateClass.doStuff())
+//}
+
+fileprivate class FileAccess {
+    func doStuff()-> String{
+        return "File private access is doing stuff"
+    }
+}
+
+fileprivate let fileClass = FileAccess()
+
+//func doAFilePrivateThing()
+//{
+//    print(self.fileClass.doStuff())
+//}
+
+class Vector2D{
+    var x : Float = 0.0
+    var y : Float = 0.0
+    
+    init(x: Float, y:Float){
+        self.x = x
+        self.y = y
+    }
+}
+func +(left: Vector2D, right: Vector2D)-> Vector2D{
+    let result = Vector2D(x:left.x + right.x, y: left.y + right.y)
+    return result
+}
+let first = Vector2D(x:2,y:3)
+let second = Vector2D(x:4,y:1)
+
+let result = first + second
+// Subscripts
+
+extension UInt8{
+    subscript(bit: UInt)-> UInt8{
+        get{
+            return (self >> bit & 0x07) & UInt8(1)
+        }
+        set{
+            let cleanBit = bit & 0x07
+            let mask : UInt8 = 0xFF ^ (1 << cleanBit)
+            let shiiftedBit = (newValue & 1) << cleanBit
+            self = self & mask | shiiftedBit
+        }
+    }
+}
+var byte :UInt8 = 212
+
+byte[0]
+byte[2]
+byte[7] = 0
+byte
+
+class Tree <T>{
+    var value : T
+    private(set) var children : [Tree <T>] = []
+    
+    init(value : T){
+        self.value = value
+    }
+    func addChild(value : T)-> Tree <T>{
+        let newChild = Tree<T>(value : value)
+        children.append(newChild)
+        return newChild
+    }
+    
+}
+//Generic Trees
+let integerTree = Tree<Int>(value: 5)
+
+integerTree.addChild(value: 10)
+integerTree.addChild(value: 5)
+let stringTree = Tree<String>(value: "Hello")
+
+stringTree.addChild(value: "Yes")
+stringTree.addChild(value: "Internet")
+
+//Structures
+
+struct Point{
+    var x : Int
+    var y : Int
+}
+
+let p = Point(x: 2, y: 3)
+
+//Error Handling
+
+enum BankError : Error {
+    case notEnoughFunds
+    
+    case cannotBeginWithNegativeFunds
+    case cannotMakeNegativeTransaction(amount: Float)
+}
+
+class BankAccount {
+    //the amount of money in the account
+    private(set) var balance : Float = 0.0
+    //inittialze the account with an amount of money
+    //Throws an error if you try to create an account
+    //with negatve funds
+    init(amount:Float) throws{
+        guard amount  > 0 else{
+            throw BankError.cannotBeginWithNegativeFunds
+        }
+        balance = amount
+    }
+    //add some money to the account
+    func deposit(amount : Float) throws {
+        guard amount > 0 else{
+            throw BankError.cannotMakeNegativeTransaction(amount: amount)
+        }
+        balance += amount
+    }
+    //Withdraws money from the bank account
+    func withdraw(amount: Float)throws{
+        guard amount > 0 else{
+            throw BankError.cannotMakeNegativeTransaction(amount: amount)
+        }
+        guard balance >= amount else{
+            throw BankError.notEnoughFunds
+   
+    }
+        balance -= amount
+    }
+}
+
+
